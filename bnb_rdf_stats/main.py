@@ -141,7 +141,7 @@ def main(argv=None):
         config_path = 'bnb_rdf_stats.cfg'
     config_folder, config_file, config_ext = check_file_location(config_path, 'config file', '.cfg', True)
     if output_path != '':
-        output_folder, output_file, output_ext = check_file_location(config_path, 'config file', '.txt', False)
+        output_folder, output_file, output_ext = check_file_location(output_path, 'output file', '.txt', False)
     else:
         output_folder, output_file, output_ext = '', 'bnb_rdf_stats_{}'.format(str(i.strftime('%Y-%m-%d'))), '.txt'
 
