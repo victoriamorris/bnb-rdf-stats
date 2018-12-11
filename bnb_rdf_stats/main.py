@@ -49,6 +49,8 @@ class Counters:
             'VIAFOrg': 0,
             'ISNIPers': 0,
             'ISNIOrg': 0,
+            'WikiDataPers': 0,
+            'WikiDataOrg': 0,
             'LCSHTopic': 0,
             'LCSHPlace': 0,
         }
@@ -185,34 +187,36 @@ def main(argv=None):
         # Remove temporary files for storing matches
         for f in ['ids', 'links']:
             if os.path.isfile(f): os.remove(f)
-        
+
         for (dirname, dirs, files) in os.walk(d):
             for filename in files:
                 if filename.endswith('.nt'):
                     i += 1
                     print('Reading from file ' + str(filename))
-                    try: counters.c['RDF'] += file_len(os.path.join(dirname, filename))
-                    except: print('\nError: {0}\n'.format(str(sys.exc_info())))
-                    subprocess.call('grep "<http://www.bl.uk/schemas/bibliographic/blterms#bnb>" "' 
+                    try:
+                        counters.c['RDF'] += file_len(os.path.join(dirname, filename))
+                    except:
+                        print('\nError: {0}\n'.format(str(sys.exc_info())))
+                    subprocess.call('grep "<http://www.bl.uk/schemas/bibliographic/blterms#bnb>" "'
                                     + str(os.path.join(dirname, filename)) + '" >>ids', shell=True)
-                    subprocess.call('grep "http://www.w3.org/2004/02/skos/core#broader" "' 
+                    subprocess.call('grep "http://www.w3.org/2004/02/skos/core#broader" "'
                                     + str(os.path.join(dirname, filename)) + '" >>links', shell=True)
-                    subprocess.call('grep "http://www.w3.org/2002/07/owl#sameAs" "' 
+                    subprocess.call('grep "http://www.w3.org/2002/07/owl#sameAs" "'
                                     + str(os.path.join(dirname, filename)) + '" >>links', shell=True)
-                    subprocess.call('grep "http://www.loc.gov/mads/rdf/v1#isIdentifiedByAuthority" "' 
+                    subprocess.call('grep "http://umbel.org/umbel#isLike" "'
                                     + str(os.path.join(dirname, filename)) + '" >>links', shell=True)
 
         print('\nCounting BNB numbers ...')
         counters.c['BNB'] = file_len('ids') + 1
         print('{} BNB numbers found'.format(str(counters.c['BNB'])))
-        
+
         with open('links', mode='r', encoding='utf-8', errors='replace') as f:
             print('\nCounting links ...')
             for line in f:
                 if ('<http://www.w3.org/2004/02/skos/core#broader>' in line
                     or '<http://www.w3.org/2002/07/owl#sameAs>' in line) \
-                   and '<http://bnb.data.bl.uk/id/concept/ddc/e2' in line \
-                   and 'http://dewey.info/class/' in line:
+                        and '<http://bnb.data.bl.uk/id/concept/ddc/e2' in line \
+                        and 'http://dewey.info/class/' in line:
                     counters.c['Dewey'] += 1
                 elif '<http://www.w3.org/2002/07/owl#sameAs>' in line:
                     if '<http://viaf.org/viaf/' in line:
@@ -225,12 +229,17 @@ def main(argv=None):
                             counters.c['LCSHTopic'] += 1
                         elif '<http://bnb.data.bl.uk/id/concept/place/lcsh/' in line:
                             counters.c['LCSHPlace'] += 1
-                elif '<http://www.loc.gov/mads/rdf/v1#isIdentifiedByAuthority>' in line \
-                     and '<http://isni.org/isni/' in line:
-                    if '<http://bnb.data.bl.uk/id/person/' in line:
-                        counters.c['ISNIPers'] += 1
-                    elif '<http://bnb.data.bl.uk/id/organization/' in line:
-                        counters.c['ISNIOrg'] += 1
+                elif '<http://umbel.org/umbel#isLike>' in line:
+                    if '<http://isni.org/isni/' in line:
+                        if '<http://bnb.data.bl.uk/id/person/' in line:
+                            counters.c['ISNIPers'] += 1
+                        elif '<http://bnb.data.bl.uk/id/organization/' in line:
+                            counters.c['ISNIOrg'] += 1
+                    elif '<http://www.wikidata.org/entity' in line:
+                        if '<http://bnb.data.bl.uk/id/person/' in line:
+                            counters.c['WikiDataPers'] += 1
+                        elif '<http://bnb.data.bl.uk/id/organization/' in line:
+                            counters.c['WikiDataOrg'] += 1
 
         print('There are {} .nt files in the {} directory'.format(str(i), filetype))
         # Write stats to output file
@@ -244,6 +253,8 @@ def main(argv=None):
         ofile.write('{}\t links to VIAF records for organizations\n'.format(str(counters.c['VIAFOrg'])))
         ofile.write('{}\t links to ISNI records for people\n'.format(str(counters.c['ISNIPers'])))
         ofile.write('{}\t links to ISNI records for organizations\n'.format(str(counters.c['ISNIOrg'])))
+        ofile.write('{}\t links to WikiData records for people\n'.format(str(counters.c['WikiDataPers'])))
+        ofile.write('{}\t links to WikiData records for organizations\n'.format(str(counters.c['WikiDataOrg'])))
         ofile.write('{}\t links to LCSH for topics\n'.format(str(counters.c['LCSHTopic'])))
         ofile.write('{}\t links to LCSH for places\n'.format(str(counters.c['LCSHPlace'])))
 
