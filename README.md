@@ -66,9 +66,13 @@ The following statistics are included:
   * Number of links to VIAF records for organizations  
     Indicated by \<http://www.w3.org/2002/07/owl#sameAs> AND \<http://viaf.org/viaf/ AND \<http://bnb.data.bl.uk/id/organization/
   * Number of links to ISNI records for people  
-    Indicated by \<http://www.loc.gov/mads/rdf/v1#isIdentifiedByAuthority> AND \<http://isni.org/isni/ AND \<http://bnb.data.bl.uk/id/person/
+    Indicated by \<http://umbel.org/umbel#isLike> AND \<http://isni.org/isni/ AND \<http://bnb.data.bl.uk/id/person/
   * Number of links to ISNI records for organizations  
-    Indicated by \<http://www.loc.gov/mads/rdf/v1#isIdentifiedByAuthority> AND \<http://isni.org/isni/ AND \<http://bnb.data.bl.uk/id/organization/
+    Indicated by \<http://umbel.org/umbel#isLike> AND \<http://isni.org/isni/ AND \<http://bnb.data.bl.uk/id/organization/
+  * Number of links to WikiData records for people  
+    Indicated by \<http://umbel.org/umbel#isLike> AND \<http://www.wikidata.org/entity AND \<http://bnb.data.bl.uk/id/person/
+  * Number of links to WikiData records for organizations  
+    Indicated by \<http://umbel.org/umbel#isLike> AND \<http://www.wikidata.org/entity AND \<http://bnb.data.bl.uk/id/organization/
   * Number of links to LCSH for topics  
     Indicated by \<http://id.loc.gov/authorities/subjects/ AND \<http://bnb.data.bl.uk/id/concept/lcsh/
   * Number of links to LCSH for places  
